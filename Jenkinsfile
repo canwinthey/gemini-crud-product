@@ -66,7 +66,7 @@ pipeline {
                 echo "Deploying application: Running docker image: ${DOCKER_IMAGE_NAME}"
                 sh "docker stop ${DOCKER_IMAGE_NAME} || true"
                 sh "docker rm ${DOCKER_IMAGE_NAME} || true"
-                sh "docker run -d --name ${DOCKER_IMAGE_NAME} -p 9090:9090 ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                sh "docker run -d --name gemini-crud-product -p 9090:9090 ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
             }
         }
     }
