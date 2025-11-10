@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    tools {
+        git 'DefaultGit' // 'DefaultGit' should match the name you gave your Git installation in Global Tool Configuration
+    }
     environment {
         // Replace with your SonarQube server URL and credentials ID
         // SONAR_SCANNER_HOME = tool 'SonarScanner' // Assumes SonarScanner is configured in Jenkins Global Tool Configuration
@@ -15,8 +17,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                cleanWs() // Add this line to clean the workspace before checkout
-                git branch: 'master', url: 'https://github.com/canwinthey/gemini-crud-product.git'
+                deleteDir() // Ensure a completely clean workspace
+                checkout scm // Use the SCM configured in the job
             }
         }
 
