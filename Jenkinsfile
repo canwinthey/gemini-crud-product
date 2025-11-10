@@ -15,6 +15,13 @@ pipeline {
     }
 
     stages {
+        stage('Prepare') {
+            steps {
+                echo "Preparing environment: Stopping and removing old Docker containers..."
+                sh "docker stop gemini-crud-product || true" // Stop container by its fixed name
+                sh "docker rm gemini-crud-product || true"   // Remove container by its fixed name
+            }
+        }
         stage('Checkout') {
             steps {
                 //deleteDir() // Ensure a completely clean workspace
