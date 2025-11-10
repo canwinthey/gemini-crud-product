@@ -21,13 +21,17 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean install -DskipTests'
+                withMaven(maven: 'Maven3') { // 'Maven3' should match the name you gave in Global Tool Configuration
+                    sh 'mvn clean install -DskipTests'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                withMaven(maven: 'Maven3') { // Use the same Maven installation
+                    sh 'mvn test'
+                }
             }
             post {
                 always {
