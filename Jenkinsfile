@@ -15,6 +15,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                cleanWs() // Add this line to clean the workspace before checkout
                 git branch: 'master', url: 'https://github.com/canwinthey/gemini-crud-product.git'
             }
         }
