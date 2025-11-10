@@ -194,8 +194,19 @@ A `Jenkinsfile` is provided at the project root for a multi-stage CI/CD pipeline
 *   **Authentication & Authorization:** Implement Spring Security for securing API endpoints.
 *   **Logging:** Implement a more robust logging strategy (e.g., ELK stack).
 *   **Monitoring:** Integrate with a monitoring solution (e.g., Prometheus, Grafana).
-*   **API Documentation:** Add OpenAPI/Swagger for API documentation.
 *   **Error Handling:** More granular error codes and messages.
 *   **Performance Testing:** Implement performance tests.
 *   **SonarQube Integration:** Enable and configure SonarQube analysis in the Jenkins pipeline for continuous code quality checks.
 *   **Deployment Strategy:** Enhance the Jenkins `Deploy` stage for production-grade deployments (e.g., Kubernetes manifests, blue/green deployments).
+
+## 10. API Documentation (Swagger UI)
+
+The application provides interactive API documentation via Swagger UI. Once the application is running, you can access the Swagger UI at:
+
+`http://localhost:9090/swagger-ui.html`
+
+From the Swagger UI, you can:
+*   View all available API endpoints.
+*   Understand the request and response models.
+*   Try out API calls directly from the browser.
+
