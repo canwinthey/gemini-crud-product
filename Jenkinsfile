@@ -3,12 +3,12 @@ pipeline {
 
     environment {
         // Replace with your SonarQube server URL and credentials ID
-        SONAR_SCANNER_HOME = tool 'SonarScanner' // Assumes SonarScanner is configured in Jenkins Global Tool Configuration
-        SONAR_HOST_URL = 'http://your-sonarqube-server'
-        SONAR_LOGIN = credentials('sonarqube-token') // Jenkins credential ID for SonarQube token
+        // SONAR_SCANNER_HOME = tool 'SonarScanner' // Assumes SonarScanner is configured in Jenkins Global Tool Configuration
+        // SONAR_HOST_URL = 'http://your-sonarqube-server'
+        // SONAR_LOGIN = credentials('sonarqube-token') // Jenkins credential ID for SonarQube token
 
         // Replace with your Docker registry credentials ID
-        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials') // Jenkins credential ID for Docker Hub
+        // DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials') // Jenkins credential ID for Docker Hub
         DOCKER_IMAGE_NAME = 'canwinthey/gemini-crud-product' // Replace with your Docker Hub username/repo
     }
 
@@ -36,7 +36,7 @@ pipeline {
                 }
             }
         }
-
+		/*
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-token', installationName: 'SonarScanner') {
@@ -44,7 +44,7 @@ pipeline {
                 }
             }
         }
-
+		*/
         stage('Build Docker Image') {
             steps {
                 script {
@@ -55,7 +55,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
+                echo "Deploying application: Running docker image: ${DOCKER_IMAGE_NAME}"
                 sh "docker stop ${DOCKER_IMAGE_NAME} || true"
                 sh "docker rm ${DOCKER_IMAGE_NAME} || true"
                 sh "docker run -d --name ${DOCKER_IMAGE_NAME} -p 9090:9090 ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
