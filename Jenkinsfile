@@ -18,8 +18,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 //deleteDir() // Ensure a completely clean workspace
-                //checkout scm // Use the SCM configured in the job
-				git branch: 'master', url: 'https://github.com/canwinthey/gemini-crud-product.git'
+                checkout scm // Use the SCM configured in the job
+				//git branch: 'master', url: 'https://github.com/canwinthey/gemini-crud-product.git'
 			}
         }
 
