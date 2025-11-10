@@ -19,9 +19,7 @@ pipeline {
             steps {
                 //deleteDir() // Ensure a completely clean workspace
                 //checkout scm // Use the SCM configured in the job
-				git branch: 'master',
-					url: 'https://github.com/canwinthey/gemini-crud-product.git',
-					credentialsId: 'canwinthey'
+				git branch: 'master', url: 'https://github.com/canwinthey/gemini-crud-product.git'
 			}
         }
 
