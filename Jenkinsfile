@@ -17,7 +17,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                deleteDir() // Ensure a completely clean workspace
+                //deleteDir() // Ensure a completely clean workspace
                 checkout scm // Use the SCM configured in the job
             }
         }
