@@ -11,6 +11,7 @@ pipeline {
 
         // Replace with your Docker registry credentials ID
         // DOCKER_REGISTRY_CREDENTIALS = credentials('docker-hub-credentials') // Jenkins credential ID for Docker Hub
+		DOCKER_CONTAINER_NAME = 'gemini-crud-product'
         DOCKER_IMAGE_NAME = 'canwinthey/gemini-crud-product' // Replace with your Docker Hub username/repo
     }
 
@@ -18,15 +19,13 @@ pipeline {
         stage('Prepare') {
             steps {
                 echo "Preparing environment: Stopping and removing old Docker containers..."
-                sh "docker stop gemini-crud-product || true" // Stop container by its fixed name
-                sh "docker rm gemini-crud-product || true"   // Remove container by its fixed name
+                sh "docker stop ${DOCKER_CONTAINER_NAME} || true" // Stop container by its fixed name
+                sh "docker rm ${DOCKER_CONTAINER_NAME} || true"   // Remove container by its fixed name
             }
         }
         stage('Checkout') {
             steps {
-                //deleteDir() // Ensure a completely clean workspace
                 checkout scm // Use the SCM configured in the job
-				//git branch: 'master', url: 'https://github.com/canwinthey/gemini-crud-product.git'
 			}
         }
 
@@ -73,7 +72,7 @@ pipeline {
                 echo "Deploying application: Running docker image: ${DOCKER_IMAGE_NAME}"
                 sh "docker stop ${DOCKER_IMAGE_NAME} || true"
                 sh "docker rm ${DOCKER_IMAGE_NAME} || true"
-                sh "docker run -d --name gemini-crud-product -p 9090:9090 ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                sh "docker run -d --name ${DOCKER_CONTAINER_NAME} -p 9090:9090 ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
             }
         }
     }
