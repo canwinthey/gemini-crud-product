@@ -1,212 +1,162 @@
 # Gemini CRUD Product Application
 
-This document provides a high-level overview and onboarding guide for new development team members joining the `gemini-crud-product` project.
+This document provides a comprehensive overview and setup guide for the `gemini-crud-product` project.
 
 ## 1. Project Overview
 
-This project is a simple Java Spring Boot application that demonstrates basic Create, Read, Update, and Delete (CRUD) operations for a `Product` entity. It provides a RESTful API for managing product information, uses an in-memory H2 database for data persistence, and includes server-side validation, global exception handling, testing, Dockerization, and a Jenkins CI/CD pipeline.
+This project is a simple Java Spring Boot application that demonstrates basic Create, Read, Update, and Delete (CRUD) operations for a `Product` entity. It provides a RESTful API, uses an in-memory H2 database, and is fully integrated with Docker, Jenkins, and SonarQube for a complete CI/CD and code quality workflow.
 
 **Core Functionality:**
 *   Manage product details (ID, Name, Description, Price).
-*   Expose REST endpoints for CRUD operations.
+*   Expose REST endpoints for CRUD operations with interactive API documentation.
 *   Validate incoming product data.
 *   Handle exceptions gracefully.
+*   Automated build, test, and code analysis via a Jenkins pipeline.
 
 ## 2. Technology Stack
 
 *   **Language:** Java 17
-*   **Framework:** Spring Boot 3.4.x
+*   **Framework:** Spring Boot 3.2.4
 *   **Build Tool:** Apache Maven
 *   **Database:** H2 Database (in-memory for development/testing)
 *   **ORM:** Spring Data JPA / Hibernate
-*   **API:** Spring Web (RESTful API)
-*   **Validation:** Jakarta Bean Validation
-*   **Utility:** Lombok (for boilerplate code reduction)
-*   **Testing:** JUnit 5, Mockito, Spring Boot Test
-*   **Code Coverage:** JaCoCo Maven Plugin
-*   **Code Quality:** SonarQube Maven Plugin (configured but skipped by default)
-*   **Containerization:** Docker
+*   **API Documentation:** SpringDoc (Swagger UI)
+*   **Containerization:** Docker, Docker Compose
 *   **CI/CD:** Jenkins Pipeline
+*   **Code Quality:** SonarQube
+*   **Testing:** JUnit 5, Mockito, Spring Boot Test
+*   **Code Coverage:** JaCoCo
 
 ## 3. Project Structure
 
-The project follows a standard Maven and Spring Boot project structure:
+The project follows a standard Maven structure and includes configuration for the full development and CI/CD lifecycle.
 
 ```
 .
-├── .git/
-├── .mvn/
+├── ...
 ├── src/
 │   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── gemini/
-│   │   │           └── product/
-│   │   │               ├── controller/     # REST API controllers
-│   │   │               ├── domain/         # Data Transfer Objects (DTOs)
-│   │   │               ├── exception/      # Custom exceptions and global handler
-│   │   │               ├── mapper/         # DTO to Entity mappers
-│   │   │               ├── model/          # JPA Entities
-│   │   │               ├── repository/     # Spring Data JPA repositories
-│   │   │               ├── service/        # Business logic services
-│   │   │               └── GeminiCrudProductApplication.java # Main Spring Boot application
-│   │   └── resources/
-│   │       ├── application.properties      # Spring Boot configuration
-│   │       ├── data.sql                    # Initial data script for H2
-│   │       └── schema.sql                  # Database schema creation script for H2
 │   └── test/
-│       └── java/
-│           └── com/
-│               └── gemini/
-│                   └── product/            # Unit and integration tests
-├── Dockerfile                              # Docker image definition
-├── Jenkinsfile                             # Jenkins CI/CD pipeline definition
-├── mvnw                                    # Maven Wrapper (Linux/macOS)
-├── mvnw.cmd                                # Maven Wrapper (Windows)
-├── pom.xml                                 # Project Object Model (Maven configuration)
-└── README.md                               # This document
+├── Dockerfile
+├── docker-compose.yml  # Docker Compose for local SonarQube environment
+├── Jenkinsfile         # Jenkins CI/CD pipeline definition
+├── mvnw & mvnw.cmd     # Maven Wrapper
+├── pom.xml             # Maven Project Object Model
+└── README.md           # This document
 ```
 
-## 4. How to Get Started (Local Development)
+## 4. Local Development Setup
 
 ### Prerequisites
 
 *   **Java Development Kit (JDK):** Version 17 or higher.
-*   **Apache Maven:** Version 3.x.x.
-*   **Docker Desktop:** For running the application in a container.
+*   **Docker Desktop:** Required for running the application and the SonarQube environment.
 *   **Git:** For version control.
 
-### Building the Project
+### Step 1: Set Up SonarQube Environment
 
-Navigate to the project root directory in your terminal and run:
+This project uses SonarQube for static code analysis. A `docker-compose.yml` file is provided to easily run SonarQube and a PostgreSQL database locally.
+
+1.  **Start the containers:**
+    From the project root directory, run the following command. This will download the images and start the services in the background.
+    ```bash
+    docker-compose up -d
+    ```
+
+2.  **Access SonarQube:**
+    *   Wait a few minutes for the server to start.
+    *   Navigate to **[http://localhost:9000](http://localhost:9000)** in your browser.
+    *   Log in with default credentials:
+        *   **Username:** `admin`
+        *   **Password:** `admin`
+    *   You will be prompted to change the password.
+
+This local SonarQube instance is what the Jenkins pipeline will use for code analysis.
+
+### Step 2: Run the Spring Boot Application
+
+You can run the application using either Maven or Docker.
+
+#### Option A: Using Maven
 
 ```bash
-./mvnw clean install
-```
-(Use `mvnw.cmd clean install` on Windows PowerShell/CMD)
+# On Windows
+.\mvnw.cmd spring-boot:run
 
-This command compiles the code, runs tests, and packages the application into a JAR file in the `target/` directory.
-
-### Running the Application Locally
-
-#### Option 1: Using Maven (Spring Boot)
-
-```bash
+# On Linux/macOS
 ./mvnw spring-boot:run
 ```
-(Use `mvnw.cmd spring-boot:run` on Windows PowerShell/CMD)
 
-The application will start on `http://localhost:9090`.
+#### Option B: Using Docker
 
-#### Option 2: Using Docker
-
-1.  **Build the Docker Image:**
+1.  **Build the JAR file:**
+    ```bash
+    .\mvnw.cmd clean install
+    ```
+2.  **Build the Docker Image:**
     ```bash
     docker build -t gemini-crud-product .
     ```
-2.  **Run the Docker Container:**
+3.  **Run the Docker Container:**
     ```bash
     docker run -d --name gemini-crud-product-app -p 9090:9090 gemini-crud-product
     ```
-    The application will be accessible at `http://localhost:9090`.
 
-### Accessing H2 Console
+The application will be available at `http://localhost:9090`.
 
-The H2 database console is enabled for local development. You can access it at:
-`http://localhost:9090/h2-console`
+## 5. API and Code Quality Documentation
 
-*   **JDBC URL:** `jdbc:h2:mem:testdb`
-*   **Username:** `sa`
-*   **Password:** `password`
+### Swagger UI (API Documentation)
 
-### Testing CRUD Operations (cURL Examples)
+Interactive API documentation is available via Swagger UI. Once the application is running, access it here:
 
-Assuming the application is running on `http://localhost:9090`:
+*   **URL:** **[http://localhost:9090/swagger-ui/index.html](http://localhost:9090/swagger-ui/index.html)**
 
-**1. Get all Products:**
-```bash
-curl -X GET http://localhost:9090/api/products
-```
+From the Swagger UI, you can view all API endpoints, see request/response models, and execute API calls directly from your browser.
 
-**2. Get Product by ID (e.g., ID 1):**
-```bash
-curl -X GET http://localhost:9090/api/products/1
-```
+### SonarQube (Code Quality)
 
-**3. Create a new Product:**
-```bash
-curl -X POST -H "Content-Type: application/json" -d "{ \"name\": \"New Product\", \"description\": \"Description of new product\", \"price\": 99.99 }" http://localhost:9090/api/products
-```
+Code analysis reports are published to the local SonarQube instance. You can view the project dashboard here:
 
-**4. Update an existing Product (e.g., ID 1):**
-```bash
-curl -X PUT -H "Content-Type: application/json" -d "{ \"name\": \"Updated Shirt\", \"description\": \"A very comfortable updated cotton shirt\", \"price\": 29.99 }" http://localhost:9090/api/products/1
-```
+*   **URL:** **[http://localhost:9000](http://localhost:9000)**
 
-**5. Delete a Product (e.g., ID 1):**
-```bash
-curl -X DELETE http://localhost:9090/api/products/1
-```
+## 6. CI/CD Pipeline (Jenkins)
 
-## 5. Testing
+A `Jenkinsfile` is included to automate the build, test, analysis, and deployment process.
 
-*   **Unit Tests:** Written using JUnit 5 and Mockito. They cover controllers, services, mappers, and models.
-*   **Running Tests:** Tests are executed automatically during `mvn clean install` or can be run specifically with `mvn test`.
-*   **Code Coverage:** JaCoCo plugin generates code coverage reports in `target/site/jacoco/index.html`.
+### Jenkins Prerequisites
 
-## 6. CI/CD (Jenkins)
+Before running the pipeline, you must configure your Jenkins instance:
 
-A `Jenkinsfile` is provided at the project root for a multi-stage CI/CD pipeline.
+1.  **Install Plugin:** Install the **"SonarQube Scanner for Jenkins"** plugin (`Manage Jenkins` > `Plugins`).
+2.  **Configure SonarQube Server:**
+    *   Go to `Manage Jenkins` > `Configure System`.
+    *   In the "SonarQube servers" section, add a server.
+    *   **Name:** `sonarqube` (This must match the name in the `Jenkinsfile`).
+    *   **Server URL:** `http://localhost:9000` (or your SonarQube server's address).
+    *   **Server authentication token:** Add a "Secret text" credential containing a token generated from the SonarQube UI (`My Account` > `Security`).
+3.  **Configure Maven:**
+    *   Go to `Manage Jenkins` > `Global Tool Configuration`.
+    *   Add a Maven installation named `Maven3`.
 
-**Pipeline Stages:**
-*   **Checkout:** Clones the Git repository.
-*   **Build:** Builds the application using Maven.
-*   **Test:** Runs unit tests and publishes JUnit results and JaCoCo coverage reports.
-*   **SonarQube Analysis:** (Commented out by default) Runs static code analysis. Requires a SonarQube server and Jenkins configuration.
-*   **Build Docker Image:** Builds a Docker image of the application locally.
-*   **Deploy:** Stops, removes, and runs the Docker image locally.
+### Pipeline Stages
 
-**To run the Jenkins pipeline:**
-1.  Ensure Jenkins is running and configured with Maven, Git, and Docker access.
-2.  Create a Pipeline job in Jenkins, pointing to this GitHub repository and the `Jenkinsfile`.
-3.  Click "Build Now".
+The pipeline includes the following stages:
 
-## 7. Key Components
+*   **Prepare:** Stops and removes old Docker containers to ensure a clean environment.
+*   **Checkout:** Clones the project from source control.
+*   **Build:** Compiles the application and skips tests for this stage.
+*   **Test:** Runs all unit and integration tests and publishes the results (JUnit and JaCoCo).
+*   **SonarQube Analysis:**
+    *   Performs static code analysis using SonarQube.
+    *   Waits for the analysis to complete and checks the project's **Quality Gate**.
+    *   The pipeline will **fail** if the Quality Gate conditions are not met.
+*   **Build Docker Image:** Builds a new Docker image tagged with the build number.
+*   **Deploy:** Deploys the application by running the newly built Docker image.
 
-*   **`Product` (model):** JPA Entity representing the product in the database.
-*   **`ProductDto` (domain):** Data Transfer Object for product data, used for API requests/responses, includes server-side validation annotations.
-*   **`ProductRepository` (repository):** Spring Data JPA interface for database operations on `Product` entities.
-*   **`ProductService` (service):** Contains business logic for CRUD operations, interacts with `ProductRepository`.
-*   **`ProductController` (controller):** RESTful API endpoints for `Product` management, uses `ProductDto` and `ProductMapper`.
-*   **`ProductMapper` (mapper):** Utility class for converting between `Product` entities and `ProductDto` objects.
-*   **`GlobalExceptionHandler` (exception):** Centralized exception handling for the application, providing consistent error responses (e.g., 404 for `ProductNotFoundException`, 400 for validation errors).
-*   **`ProductNotFoundException` (exception):** Custom exception for when a product is not found.
+### Running the Pipeline
 
-## 8. Vulnerabilities/Security
-
-*   **Server-Side Validation:** `ProductDto` uses Jakarta Bean Validation (`@NotBlank`, `@Positive`) to ensure data integrity and prevent common input-related vulnerabilities.
-*   **Global Exception Handling:** `GlobalExceptionHandler` provides a structured way to handle exceptions, preventing sensitive information leakage and improving API robustness.
-*   **Hardcoded Credentials:** (Future Consideration) Currently, H2 database credentials are hardcoded in `application.properties`. For production, these should be managed via environment variables or a secrets management solution.
-
-## 9. Future Enhancements/Considerations
-
-*   **External Database:** Migrate from H2 in-memory to a persistent database (e.g., PostgreSQL, MySQL).
-*   **Authentication & Authorization:** Implement Spring Security for securing API endpoints.
-*   **Logging:** Implement a more robust logging strategy (e.g., ELK stack).
-*   **Monitoring:** Integrate with a monitoring solution (e.g., Prometheus, Grafana).
-*   **Error Handling:** More granular error codes and messages.
-*   **Performance Testing:** Implement performance tests.
-*   **SonarQube Integration:** Enable and configure SonarQube analysis in the Jenkins pipeline for continuous code quality checks.
-*   **Deployment Strategy:** Enhance the Jenkins `Deploy` stage for production-grade deployments (e.g., Kubernetes manifests, blue/green deployments).
-
-## 10. API Documentation (Swagger UI)
-
-The application provides interactive API documentation via Swagger UI. Once the application is running, you can access the Swagger UI at:
-
-`http://localhost:9090/swagger-ui.html`
-
-From the Swagger UI, you can:
-*   View all available API endpoints.
-*   Understand the request and response models.
-*   Try out API calls directly from the browser.
-
+1.  Create a "Pipeline" job in Jenkins.
+2.  Configure the job to use "Pipeline script from SCM".
+3.  Point it to your Git repository. The script path should be `Jenkinsfile`.
+4.  Run the pipeline.

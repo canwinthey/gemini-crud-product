@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    /*tools {
-        git 'DefaultGit' // 'DefaultGit' should match the name you gave your Git installation in Global Tool Configuration
-    }*/
     environment {
         // Replace with your SonarQube server URL and credentials ID
         // SONAR_SCANNER_HOME = tool 'SonarScanner' // Assumes SonarScanner is configured in Jenkins Global Tool Configuration
@@ -50,15 +47,22 @@ pipeline {
                 }
             }
         }
-		/*
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube-token', installationName: 'SonarScanner') {
-                    sh "mvn sonar:sonar -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_LOGIN}"
+                // 'sonarqube' should match the name of the SonarQube Server configuration in 
+                // Manage Jenkins > Configure System
+                withSonarQubeEnv('sonarqube') {
+                    withMaven(maven: 'Maven3') {
+                        // Explicitly set project key and name for SonarQube
+                        sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=gemini-crud-product -Dsonar.projectName="Gemini CRUD Product"'
+                    }
+                }
+                // Pause the pipeline to wait for SonarQube analysis and quality gate check
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
-		*/
         stage('Build Docker Image') {
             steps {
                 script {
