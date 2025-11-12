@@ -26,6 +26,7 @@ This project is a simple Java Spring Boot application that demonstrates basic Cr
 *   **Code Quality:** SonarQube
 *   **Testing:** JUnit 5, Mockito, Spring Boot Test
 *   **Code Coverage:** JaCoCo
+*   **CORS Configuration:** Configured to allow requests from `http://localhost:3000` to support local ReactJS development.
 
 ## 3. Project Structure
 
